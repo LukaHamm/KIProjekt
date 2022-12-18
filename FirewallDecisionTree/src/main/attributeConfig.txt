@@ -1,0 +1,3 @@
+Attribute1,Attribute2,attribute3,outcome
+false,false,true
+Hoch,Tief,none

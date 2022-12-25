@@ -42,6 +42,16 @@ public class TreeNode {
 	public Map<String, Integer> getBranchingMap() {
 		return branchingMap;
 	}
+
+	public Attribute getAttribute() {
+		return attribute;
+	}
+
+	public void setAttribute(Attribute attribute) {
+		this.attribute = attribute;
+	}
+	
+	
 	
 	
 	

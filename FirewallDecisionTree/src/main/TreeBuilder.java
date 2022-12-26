@@ -122,8 +122,9 @@ public class TreeBuilder {
 					attributeValueCount++;
 				}
 			}
-
-			attributeApperanceCount.put(attrValue, attributeValueCount);
+			if (attributeValueCount != 0) {
+				attributeApperanceCount.put(attrValue, attributeValueCount);
+			}
 		}
 		int attributapperanceTotal = atrributeCombinations != null
 				? calculateAttributeAppearanceCountTotal(atrributeCombinations)
@@ -311,6 +312,10 @@ public class TreeBuilder {
 						attributeMaxGain = attribute;
 					}
 				}
+				if (attributeList.size() == 1) {
+					maxGain = calculateGain(entropy, attributeValuePathTaken, attributeValueCombinations);
+					attributeMaxGain = new ResultAttribute(attributeList.get(attributeList.size() - 1));
+				}
 			}
 			if (maxGain > 0) {
 				List<Attribute> attributeValueCombinationsAttributeAdded = new ArrayList<>(attributeValueCombinations);
@@ -324,7 +329,6 @@ public class TreeBuilder {
 				childTreeNode.getAttribute().setAttributeValue(gainToResultAttributeValueMap.get((int) maxGain));
 				treeNode.getBranchingMap().put(attributeValue, indexBranchMapping);
 				treeNode.getTreenodeList().add(childTreeNode);
-				attributeList.remove(attributeMaxGain);
 			}
 			indexBranchMapping++;
 		}

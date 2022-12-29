@@ -13,8 +13,8 @@ public class Main {
 	private static ArrayList<Attribute> attributeList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		String pathAttributeConfig = Main.class.getResource("attributeConfig2.txt").getFile();
-		String pathAttributeWeightConfig = Main.class.getResource("attributeGewichtung2.txt").getFile();
+		String pathAttributeConfig = Main.class.getResource("attributeConfig.txt").getFile();
+		String pathAttributeWeightConfig = Main.class.getResource("attributeGewichtung.txt").getFile();
 //		List<String> rows = new ArrayList<>();
 //		buildAttributeList(pathAttributeConfig);
 //		int counter = 0;
@@ -56,6 +56,8 @@ public class Main {
 		TreeBuilder treeBuilder = new TreeBuilder();
 		try {
 			TreeNode treeNode = treeBuilder.build(pathAttributeConfig, pathAttributeWeightConfig);
+			String outcome = treeNode.evaluate("105; DROP TABLE Suppliers");
+			System.out.println(outcome);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

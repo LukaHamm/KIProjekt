@@ -28,7 +28,7 @@ public class TreeNode {
 
 	public String evaluate (String evaluateString) {
 		String attributeState =  attribute.evaluate(evaluateString);
-		if(treenodeList == null) {
+		if(treenodeList.isEmpty()) {
 			return attributeState;
 		}
 		TreeNode nextTreeNode = treenodeList.get(branchingMap.get(attributeState));

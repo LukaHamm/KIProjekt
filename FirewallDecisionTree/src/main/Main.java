@@ -56,8 +56,11 @@ public class Main {
 		TreeBuilder treeBuilder = new TreeBuilder();
 		try {
 			TreeNode treeNode = treeBuilder.build(pathAttributeConfig, pathAttributeWeightConfig);
-			String outcome = treeNode.evaluate("105; DROP TABLE Suppliers");
+			String outcome = treeNode.evaluate("overcast|windy|normal|mild");
 			System.out.println(outcome);
+			StringBuilder builder = new StringBuilder();
+			treeNode.print(builder,"","");
+			System.out.println(builder);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

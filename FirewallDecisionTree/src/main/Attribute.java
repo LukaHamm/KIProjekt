@@ -41,7 +41,7 @@ public abstract class Attribute {
 				&& Objects.equals(attributeValueOptions, other.attributeValueOptions);
 	}
 
-	public abstract String evaluate (String AttributeToEvaluate);
+	public abstract String evaluate (String AttributeToEvaluate) throws AttributeNoMatchException;
 
 	public List<String> getAttributeValueOptions() {
 		return attributeValueOptions;

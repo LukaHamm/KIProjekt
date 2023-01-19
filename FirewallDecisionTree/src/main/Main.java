@@ -1,9 +1,11 @@
 package main;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -59,10 +61,18 @@ public class Main {
 			String outcome = treeNode.evaluate("overcast|windy|normal|mild");
 			System.out.println(outcome);
 			StringBuilder builder = new StringBuilder();
-			treeNode.print(builder,"","");
+			treeNode.print(builder, "", "");
 			System.out.println(builder);
+			try (FileWriter fw = new FileWriter(new File("C:\\Eclipse\\tree.txt"), StandardCharsets.UTF_8);
+					BufferedWriter writer = new BufferedWriter(fw)) {
+					writer.write(builder.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+		} catch (AttributeNoMatchException e1) {
+			System.out.println(e1.getMessage());;
 		}
 	}
 

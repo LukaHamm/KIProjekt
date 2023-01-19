@@ -20,6 +20,14 @@ public class TreeBuilder {
     private List<List<Attribute>> attributeWeightList;
     private Map<Integer, String> gainToResultAttributeValueMap;
 
+    /**
+     * Methode die den Buildprozess anstoesst
+     * 
+     * @param pathToAttributeConfig CSV-Datei, um die Atrribute zu konfigurieren (Attributnamen(erste Spalte) und Attributwerte (unterAttributname))
+     * @param pathToAttributeWeight CSV-Datei mit Attributewertkombination mit Ergebnisattribut in letzter Spalte
+     * @return TreeNode - Wurzel des Entscheidungsbaums
+     * @throws FileNotFoundException
+     */
     public TreeNode build(String pathToAttributeConfig, String pathToAttributeWeight) throws FileNotFoundException {
         buildAttributeList(pathToAttributeConfig);
         gainToResultAttributeValueMap = new HashMap<>();
@@ -34,6 +42,11 @@ public class TreeBuilder {
         return treeNode;
     }
 
+    /**
+     * Einlesen der Attributwertkombinationen
+     * @param pathToAttributeWeight
+     * @throws FileNotFoundException
+     */
     private void readAttributeWeight(String pathToAttributeWeight) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(pathToAttributeWeight));
         attributeWeightList = new ArrayList<>();
@@ -60,6 +73,9 @@ public class TreeBuilder {
         scanner.close();
     }
 
+    /**
+     * baut die Treeroot
+     */
     private void buildTreeRoot() {
         double entropyTotal = calculateEntropyTotal((ResultAttribute) attributeList.get(attributeList.size() - 1),
             null);
@@ -78,6 +94,13 @@ public class TreeBuilder {
         attributeList.remove(attributeMaxGain);
     }
 
+    /**
+     * Berechnet die Entropie fuer bestimmte Attributwertpfade, ignoriert alle Zeilen die nicht den entsprechenden Attributwerten
+     * entsprechen
+     * @param resultAttribute
+     * @param atrributeCombinations
+     * @return
+     */
     private double calculateEntropyTotal(ResultAttribute resultAttribute, List<Attribute> atrributeCombinations) {
         Map<String, Integer> attributeApperanceCount = new HashMap<>();
         for (String attrValue : resultAttribute.getAttributeValueOptions()) {
@@ -122,6 +145,14 @@ public class TreeBuilder {
      * -Abfrage gain von null -Es muss moeglich sein mehrere
      * Attributwertkombinationen zu ignorieren - in einer Ebene suchen - zur root
      * zurückspringen bis in entspr. Ebene gehen
+     */
+    /**
+     * Berechnet den Informationsgewinn eines Attributs. Es werden nur Zeilen betrachtet, die mit den bereits vorgegebenen
+     * Attributwerten uebereinstimmen
+     * @param entropyTotal
+     * @param attr
+     * @param attributeValueCombinations
+     * @return
      */
     private double calculateGain(double entropyTotal, Attribute attr, List<Attribute> attributeValueCombinations) {
         Map<String, Map<String, Integer>> attributeApperanceCount = countAttributeApperance(attr, attributeValueCombinations);
@@ -175,6 +206,13 @@ public class TreeBuilder {
 
     }
 
+    /**
+     * Zaehlt fuer jeden Attributwert wie oft bei diesen welcher Wert des Ergebnisattributs angenommen wurde.
+     * Es werden nur die Zeilen beachtet die mit den bereitsvorgegebenen Attributwerten uebereinstimmen
+     * @param attr
+     * @param attributeValueCombinations
+     * @return
+     */
     private Map<String, Map<String, Integer>> countAttributeApperance(Attribute attr, List<Attribute> attributeValueCombinations) {
         Map<String, Map<String, Integer>> attributeApperanceCount = new HashMap<>();
         for (String attributeValue : attr.getAttributeValueOptions()) {
@@ -215,6 +253,11 @@ public class TreeBuilder {
         return attributeApperanceCount;
     }
 
+    /**
+     * Bestimmt die Anzahl Zeilen, die beruecksichtigt werden
+     * @param attributeValueCombinations
+     * @return
+     */
     private int calculateAttributeAppearanceCountTotal(List<Attribute> attributeValueCombinations) {
         int apperanceCount = 0;
         for (List<Attribute> attrList : attributeWeightList) {
@@ -240,6 +283,11 @@ public class TreeBuilder {
         return Math.log(value) / Math.log(2.0);
     }
 
+    /**
+     * Generiert die Liste aller möglichen Attribute
+     * @param pathToAttributeConfig
+     * @throws FileNotFoundException
+     */
     private void buildAttributeList(String pathToAttributeConfig) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(pathToAttributeConfig));
         Scanner rowScanner = new Scanner(scanner.nextLine());
@@ -271,6 +319,11 @@ public class TreeBuilder {
     }
 
     // Entropie erneut ausrechnen
+    /**
+     * Baut den Rest vom Baum rekursiv auf
+     * @param attributeValueCombinations
+     * @param treeNode
+     */
     private void buildTree(List<Attribute> attributeValueCombinations, TreeNode treeNode) {
         Attribute attributeValuePathTaken = new BranchAttribute(treeNode.getAttribute());
         if (attributeValueCombinations == null) {
@@ -320,11 +373,5 @@ public class TreeBuilder {
         }
     }
 
-
-
-    private void print(List<TreeNode> parentList, StringBuilder builder, int maximumIn){
-
-
-    }
 
 }

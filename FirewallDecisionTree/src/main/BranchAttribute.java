@@ -19,9 +19,12 @@ public class BranchAttribute extends Attribute {
 	private Pattern pattern;
 	private Matcher matcher;
 	
-	
+	/**
+	 * Wertet den String mit uebergebenen Attributwerten aus
+	 * @throws AttributeNoMatchException Wenn bei einem Attribut kein Attributwert zutrifft
+	 */
 	@Override
-	public String evaluate(String AttributeToEvaluate) {
+	public String evaluate(String AttributeToEvaluate) throws AttributeNoMatchException {
 		for(String attributeValueOption: attributeValueOptions) {
 			pattern = Pattern.compile(attributeValueOption);
 			matcher = pattern.matcher(AttributeToEvaluate);
@@ -29,7 +32,7 @@ public class BranchAttribute extends Attribute {
 				return attributeValueOption;
 			}
 		}
-		return null;
+		throw new AttributeNoMatchException("Kein Attributwert kann in uebergebenen String ermittelt werden");
 	}
 
 }

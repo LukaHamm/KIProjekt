@@ -13,6 +13,9 @@ public class ResultAttribute extends Attribute {
 		super(attributeName);
 	}
 
+	/**
+	 * Gibt den Endwert aus 
+	 */
 	@Override
 	public String evaluate(String AttributeToEvaluate) {
 		return attributeValue;

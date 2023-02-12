@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,95 +16,51 @@ public class Main {
 	private static ArrayList<Attribute> attributeList;
 
 	public static void main(String[] args) throws FileNotFoundException {
-		String pathAttributeConfig = Main.class.getResource("attributeConfig.txt").getFile();
-		String pathAttributeWeightConfig = Main.class.getResource("attributeGewichtung.txt").getFile();
-//		List<String> rows = new ArrayList<>();
-//		buildAttributeList(pathAttributeConfig);
-//		int counter = 0;
-//		for (Attribute attr : attributeList) {
-//			if (!rows.isEmpty()) {
-//				List<String> newRowList = new ArrayList<>();
-//				for (String row : rows) {
-//					if (!(attr instanceof ResultAttribute)) {
-//						String copiedRow = new String(row);
-//						row = row + "|" + attr.getAttributeValueOptions().get(0);
-//						copiedRow = copiedRow + "|" + attr.getAttributeValueOptions().get(1);
-//						newRowList.add(row);
-//						newRowList.add(copiedRow);
-//					} else {
-//						row = row + "|" + attr.getAttributeValueOptions().get(0);
-//						newRowList.add(row);
-//						counter++;
-//						System.out.println(row);
-//					}
-//				}
-//				rows = newRowList;
-//			} else {
-//				rows.add(attr.getAttributeValueOptions().get(0));
-//				rows.add(attr.getAttributeValueOptions().get(1));
-//			}
-//			System.out.println(counter);
-//		}
-//		try {
-//			FileWriter writer = new FileWriter(pathAttributeWeightConfig);
-//			for (String row : rows) {
-//				writer.write(row + System.getProperty("line.separator"));
-//			}
-//
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-
-		TreeBuilder treeBuilder = new TreeBuilder();
-		try {
-			TreeNode treeNode = treeBuilder.build(pathAttributeConfig, pathAttributeWeightConfig);
-			String outcome = treeNode.evaluate("overcast|windy|normal|mild");
-			System.out.println(outcome);
-			StringBuilder builder = new StringBuilder();
-			treeNode.print(builder, "", "");
-			System.out.println(builder);
-			try (FileWriter fw = new FileWriter(new File("C:\\Eclipse\\tree.txt"), StandardCharsets.UTF_8);
-					BufferedWriter writer = new BufferedWriter(fw)) {
+		for (;;) {
+			Scanner input = new Scanner(System.in);
+			System.out.println("Bitte geben Sie den Pfad für die Attributkonfiguration ein:");
+			String pathAttributeConfig = input.nextLine();
+			System.out.println("Bitte geben Sie den Dateinamen ein:");
+			String filenameAttributeConfig = input.nextLine();
+			System.out.println("Bitte geben Sie den Pfad für die Attributwertkombinationen ein:");
+			String pathAttributeWeightConfig = input.nextLine();
+			System.out.println("Bitte geben Sie den Dateinamen ein:");
+			String filenameAttributeWeight = input.nextLine();
+			TreeBuilder treeBuilder = new TreeBuilder();
+			try {
+				TreeNode treeNode = treeBuilder.build(pathAttributeConfig, filenameAttributeConfig,
+						pathAttributeWeightConfig, filenameAttributeWeight);
+				System.out.println("Baum erstellt!");
+				StringBuilder builder = new StringBuilder();
+				treeNode.print(builder, "", "");
+				System.out.println(builder);
+				try (FileWriter fw = new FileWriter(
+						new File(pathAttributeConfig + "/" + "tree.txt"),
+						StandardCharsets.UTF_8); BufferedWriter writer = new BufferedWriter(fw)) {
 					writer.write(builder.toString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (AttributeNoMatchException e1) {
-			System.out.println(e1.getMessage());;
-		}
-	}
-
-	private static void buildAttributeList(String pathToAttributeConfig) throws FileNotFoundException {
-		Scanner scanner = new Scanner(new File(pathToAttributeConfig));
-		Scanner rowScanner = new Scanner(scanner.nextLine());
-		rowScanner.useDelimiter("\\|");
-		attributeList = new ArrayList<>();
-		while (rowScanner.hasNext()) {
-			String attributeName = rowScanner.next();
-			if (rowScanner.hasNext()) {
-				attributeList.add(new BranchAttribute(attributeName));
-			} else {
-				attributeList.add(new ResultAttribute(attributeName));
-			}
-		}
-		while (scanner.hasNextLine()) {
-			int rowIndex = 0;
-			String line = scanner.nextLine();
-			rowScanner = new Scanner(line);
-			rowScanner.useDelimiter("\\|");
-			while (rowScanner.hasNext()) {
-				String attributeValue = rowScanner.next();
-				if (!attributeValue.equals("none")) {
-					attributeList.get(rowIndex).getAttributeValueOptions().add(attributeValue);
-					rowIndex++;
+				} catch (IOException e) {
+					System.out.println("Beim Speichern der Baumstruktur als Textdatei ist ein Fehler aufgetreten");
+					continue;
 				}
+				System.out.println("Geben Sie eine Zeichenkette ein die geprüft werden soll");
+				String testString = input.nextLine();
+				String outcome = treeNode.evaluate(testString);
+				System.out.println("Ergebnis der Prüfung: " + outcome);
+
+			} catch (FileNotFoundException e) {
+				System.out.println("Die Datei konnte unter dem angegebenen Pfad nicht gefunden werden");
+				continue;
+			} catch (AttributeNoMatchException e1) {
+				System.out.println(e1.getMessage());
+				continue;
+			}
+			System.out.println("Möchten Sie weitere Entscheidungsbäume erstellen (J) oder beenden (N)?");
+			String confirmation = input.nextLine();
+			confirmation = confirmation.toUpperCase();
+			if (confirmation.equals("N")) {
+				break;
 			}
 		}
-		scanner.close();
-		rowScanner.close();
 	}
 
 }

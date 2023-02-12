@@ -28,15 +28,15 @@ public class TreeBuilder {
      * @return TreeNode - Wurzel des Entscheidungsbaums
      * @throws FileNotFoundException
      */
-    public TreeNode build(String pathToAttributeConfig, String pathToAttributeWeight) throws FileNotFoundException {
-        buildAttributeList(pathToAttributeConfig);
+    public TreeNode build(String pathToAttributeConfig,String filenameAttributeConfig, String pathToAttributeWeight, String fileNameAttributeWeight) throws FileNotFoundException {
+        buildAttributeList(pathToAttributeConfig,filenameAttributeConfig);
         gainToResultAttributeValueMap = new HashMap<>();
         int gainKey = 0;
         for (String val : attributeList.get(attributeList.size() - 1).getAttributeValueOptions()) {
             gainKey--;
             gainToResultAttributeValueMap.put(gainKey, val);
         }
-        readAttributeWeight(pathToAttributeWeight);
+        readAttributeWeight(pathToAttributeWeight, fileNameAttributeWeight);
         buildTreeRoot();
         buildTree(null, treeNode);
         return treeNode;
@@ -47,8 +47,8 @@ public class TreeBuilder {
      * @param pathToAttributeWeight
      * @throws FileNotFoundException
      */
-    private void readAttributeWeight(String pathToAttributeWeight) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(pathToAttributeWeight));
+    private void readAttributeWeight(String pathToAttributeWeight, String filename) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(pathToAttributeWeight, filename));
         attributeWeightList = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -288,8 +288,8 @@ public class TreeBuilder {
      * @param pathToAttributeConfig
      * @throws FileNotFoundException
      */
-    private void buildAttributeList(String pathToAttributeConfig) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(pathToAttributeConfig));
+    private void buildAttributeList(String pathToAttributeConfig, String filename) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(pathToAttributeConfig, filename));
         Scanner rowScanner = new Scanner(scanner.nextLine());
         rowScanner.useDelimiter("\\|");
         attributeList = new ArrayList<>();

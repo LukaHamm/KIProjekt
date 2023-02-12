@@ -32,7 +32,7 @@ public class BranchAttribute extends Attribute {
 				return attributeValueOption;
 			}
 		}
-		throw new AttributeNoMatchException("Kein Attributwert kann in uebergebenen String ermittelt werden");
+		throw new AttributeNoMatchException("Kein Attributwert kann in übergebenen String ermittelt werden, für Attribut: " + attributeName);
 	}
 
 }
